@@ -1,0 +1,188 @@
+cultureInfo en-US
+
+	linguisticMetadata =
+			{
+			  "Version": "2.0.0",
+			  "Language": "en-US",
+			  "Entities": {
+			    "ai_token_spend.roi": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "ai_token_spend",
+			          "ConceptualProperty": "ROI"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Net ROI": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "ROI by Team": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "ai_token_spend.total_spend": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "ai_token_spend",
+			          "ConceptualProperty": "Total Spend"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Total Spend by Team": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "Monthly Spend Trend": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "ai_token_spend.hours_saved": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "ai_token_spend",
+			          "ConceptualProperty": "Hours Saved"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Hours Saved by Team": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "Monthly Hours Saved Trend": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "ai_token_spend.cost_per_accepted_task": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "ai_token_spend",
+			          "ConceptualProperty": "Cost per Accepted Task"
+			        }
+			      },
+			      "State": "Generated"
+			    },
+			    "ai_token_spend.budget_variance_": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "ai_token_spend",
+			          "ConceptualProperty": "Budget Variance %"
+			        }
+			      },
+			      "State": "Generated"
+			    },
+			    "ai_token_spend.cost_per_hour_saved": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "ai_token_spend",
+			          "ConceptualProperty": "Cost per Hour Saved"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Cost per Hour Saved by Department": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "hr.department": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "hr",
+			          "ConceptualProperty": "department"
+			        }
+			      },
+			      "State": "Generated"
+			    },
+			    "hr.agegroup": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "hr",
+			          "ConceptualProperty": "agegroup"
+			        }
+			      },
+			      "State": "Generated"
+			    },
+			    "hr.gender": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "hr",
+			          "ConceptualProperty": "gender"
+			        }
+			      },
+			      "State": "Generated"
+			    },
+			    "hr.year": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "hr",
+			          "ConceptualProperty": "year"
+			        }
+			      },
+			      "State": "Generated"
+			    },
+			    "ai_token_spend.team_name": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "ai_token_spend",
+			          "ConceptualProperty": "team_name"
+			        }
+			      },
+			      "State": "Generated"
+			    }
+			  }
+			}
+		contentType: json
+

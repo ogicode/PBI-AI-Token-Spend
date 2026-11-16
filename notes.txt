@@ -1,0 +1,47 @@
+pbi
+add another table and do a inner merge
+make star schema in pbi
+make a prediction
+ipynb
+kpis
+skontaj html(check)
+colors
+
+server
+napravi server
+set airflow to run every hour
+set a pipeline that collects some other data
+make ci cd
+setup local test
+
+fix
+map of roles and permisions (check)
+make secure conection
+publish with no credentials
+
+sta moze claude napraviti sa code
+figma
+design to code
+sta moze claude cowork sa figma airflow pbi
+track tokens per task
+make google block cookies (check)
+build a new page with calude code
+try out other cheaper models with pbi
+can claude code use agents (nije kroisno)
+skontaj kako da pravi more interesting charts
+provjeri jel radi na pbi online
+vjerovatno dobro radi ako vec ima template
+do some charts make sence?
+find token spent /cost (check)
+claude cowork
+try pbi with cheaper tokens maybe gemini 3.8
+fix map
+
+popravi year umjesto time
+i month
+jel se moze mjeriti produktivnost po modelu
+ili roi po modelu
+napravi branch dev prod
+Nadji neki originalni dataset
+koji su zakljuci?
+jel mogu dodati chatgpt ai da ljudi pricaju sa chatovima?

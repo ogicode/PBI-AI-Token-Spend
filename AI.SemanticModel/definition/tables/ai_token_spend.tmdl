@@ -1,0 +1,607 @@
+table ai_token_spend
+	lineageTag: abe39a2a-9468-4206-8a0a-88db5a1badda
+
+	measure 'Total Spend' = SUM(ai_token_spend[cost_eur])
+		formatString: #,0\ "€";-#,0\ "€";#,0\ "€"
+		lineageTag: bd92647f-8f7f-4a01-b79e-a934083e4ee3
+
+	measure 'Cost per Hour Saved' = DIVIDE([Total Spend], SUM(ai_token_spend[hours_saved]))
+		formatString: #,0.00\ "€";-#,0.00\ "€";#,0.00\ "€"
+		lineageTag: 0df01d19-9f84-475f-87cb-9f7c7daa8b0f
+
+	measure ROI = DIVIDE(SUM(ai_token_spend[labour_value_eur]) - [Total Spend], [Total Spend])
+		lineageTag: 15b1ea26-b7c1-41f3-ac48-2a189324c72a
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Hours Saved' = SUM(ai_token_spend[hours_saved])
+		lineageTag: 0b0e12b1-e9cd-460b-a8ca-05b6c3821a20
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Budget Variance %' =
+			
+			VAR Budget =
+			    SUMX(
+			        SUMMARIZE(ai_token_spend, ai_token_spend[team_name], ai_token_spend[month_year]),
+			        CALCULATE(MAX(ai_token_spend[monthly_budget_eur]))
+			    )
+			RETURN DIVIDE([Total Spend] - Budget, Budget)
+		formatString: 0.00\ %;-0.00\ %;0.00\ %
+		lineageTag: e880b2dc-f2e1-4751-8a75-3025d10c9d42
+
+	measure 'Cost per Accepted Task' = DIVIDE([Total Spend], SUM(ai_token_spend[tasks_accepted]))
+		lineageTag: ba1c4e3c-80af-4d96-9000-93e5b12f3679
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Card - Spend by Model' =
+			
+			VAR CardW     = 600
+			VAR CardH     = 480
+			VAR TitleSize = 30
+			VAR TitleGap  = 20
+			VAR ValueSize = 22
+			VAR ValueWidth = 130
+			VAR NameSize  = 17
+			VAR MetaSize  = 15
+			VAR RowPadV   = 13
+			VAR RowPadH   = 18
+			VAR RowGap    = 10
+			VAR AccentW   = 5
+			VAR AccentCol = "#426A92"
+			VAR RowBg     = "#F3F4F6"
+			VAR BarBg     = "#E2E6EB"
+			VAR TextDark  = "#172B4D"
+			VAR TextMuted = "#5D6878"
+			VAR TotalSpend = SUM ( ai_token_spend[cost_eur] )
+			VAR CardRows =
+			    CONCATENATEX (
+			        TOPN (
+			            5,
+			            SUMMARIZE ( ai_token_spend, ai_token_spend[model_name] ),
+			            CALCULATE ( SUM ( ai_token_spend[cost_eur] ) ), DESC
+			        ),
+			        "<div style='position:relative;background:" & RowBg & ";border-radius:8px;margin-bottom:" & RowGap & "px;overflow:hidden;'>"
+			            & "<div style='position:absolute;top:0;left:0;height:100%;width:"
+			            & FORMAT ( DIVIDE ( CALCULATE ( SUM ( ai_token_spend[cost_eur] ) ), TotalSpend ) * 100, "0" )
+			            & "&#37;;background:" & BarBg & ";'></div>"
+			            & "<div style='position:relative;display:flex;align-items:center;border-left:" & AccentW & "px solid " & AccentCol & ";padding:" & RowPadV & "px " & RowPadH & "px;'>"
+			            & "<div style='font-size:" & ValueSize & "px;font-weight:600;color:" & TextDark & ";min-width:" & ValueWidth & "px;'>&#8364;"
+			            & FORMAT ( CALCULATE ( SUM ( ai_token_spend[cost_eur] ) ) / 1000, "#,##0.0" )
+			            & "K</div><div>"
+			            & "<div style='font-size:" & NameSize & "px;font-weight:400;color:" & TextDark & ";'>"
+			            & ai_token_spend[model_name]
+			            & "</div>"
+			            & "<div style='font-size:" & MetaSize & "px;font-weight:400;color:" & TextMuted & ";'>"
+			            & FORMAT ( DIVIDE ( CALCULATE ( SUM ( ai_token_spend[cost_eur] ) ), TotalSpend ) * 100, "0.0" )
+			            & "&#37; of spend</div>"
+			            & "</div></div></div>",
+			        "",
+			        CALCULATE ( SUM ( ai_token_spend[cost_eur] ) ), DESC
+			    )
+			RETURN
+			    "data:image/svg+xml;utf8,"
+			        & "<svg xmlns='http://www.w3.org/2000/svg' width='" & CardW & "' height='" & CardH & "'>"
+			        & "<foreignObject width='100%' height='100%'>"
+			        & "<div xmlns='http://www.w3.org/1999/xhtml' style='font-family:Segoe UI,sans-serif;background:transparent;padding:4px 2px;box-sizing:border-box;height:100%;'>"
+			        & "<div style='font-size:" & TitleSize & "px;font-weight:600;color:" & TextDark & ";margin-bottom:" & TitleGap & "px;'>Spend by Model</div>"
+			        & CardRows
+			        & "</div></foreignObject></svg>"
+		lineageTag: 931e1ef8-e603-4fb1-8fb9-5b59e046ab24
+
+	measure 'Last Updated' = FORMAT(NOW(), "dd/MM/yy HH:mm")
+		lineageTag: d47855f7-5686-419a-a190-b5bc9a896acf
+
+	measure 'Acceptance Rate' = DIVIDE(SUM(ai_token_spend[tasks_accepted]), SUM(ai_token_spend[tasks_attempted]))
+		formatString: 0\ %;-0\ %;0\ %
+		lineageTag: 577628e0-44fb-4c38-b596-5929d923c596
+
+	measure 'Value Multiple' = DIVIDE(SUM(ai_token_spend[labour_value_eur]), SUM(ai_token_spend[cost_eur]))
+		lineageTag: a9c20843-01b1-4005-a091-a2fd18f73252
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Cache Rate' = DIVIDE(SUM(ai_token_spend[cached_input_tokens]), SUM(ai_token_spend[input_tokens]))
+		formatString: 0\ %;-0\ %;0\ %
+		lineageTag: e75eba60-1ae8-4921-95b8-b17ca5acf154
+
+	measure 'Wasted Spend €' = SUM(ai_token_spend[wasted_cost_eur])
+		formatString: #,0.00\ "€";-#,0.00\ "€";#,0.00\ "€"
+		lineageTag: 3501e70d-540d-489d-9ea5-2985fee74102
+
+	measure 'Wasted Spend %' = DIVIDE(SUM(ai_token_spend[wasted_cost_eur]), [Total Spend])
+		formatString: 0.00\ %;-0.00\ %;0.00\ %
+		lineageTag: 7f898f5b-fb7c-41bc-95af-a2223834cca8
+
+	column usage_id
+		dataType: int64
+		isNullable: false
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 84ab35ca-db0b-42de-b70e-b2f8ede819b8
+		summarizeBy: sum
+		sourceColumn: usage_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column usage_date
+		dataType: dateTime
+		isNullable: false
+		formatString: Long Date
+		sourceProviderType: date
+		lineageTag: 8ab55992-50f0-4454-a049-16d29de663af
+		summarizeBy: none
+		sourceColumn: usage_date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column year
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: af55f3cf-148d-4488-ac64-937c5c35ffe1
+		summarizeBy: sum
+		sourceColumn: year
+
+		annotation SummarizationSetBy = Automatic
+
+	column quarter
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: cd725c91-978a-4859-a628-0d6d209e56df
+		summarizeBy: none
+		sourceColumn: quarter
+
+		annotation SummarizationSetBy = Automatic
+
+	column month_no
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 738b033a-8520-4ec9-82bc-66fb126a8c0e
+		summarizeBy: sum
+		sourceColumn: month_no
+
+		annotation SummarizationSetBy = Automatic
+
+	column month_name
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: f8acd42a-9ed4-4d8c-be35-5f8c7980eee6
+		summarizeBy: none
+		sourceColumn: month_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column month_year
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 41716493-ad16-49ac-8061-d1addf4c827c
+		summarizeBy: none
+		sourceColumn: month_year
+
+		annotation SummarizationSetBy = Automatic
+
+	column day_name
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: afb7c90e-ac56-4cf4-8499-a716345b87f6
+		summarizeBy: none
+		sourceColumn: day_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_weekend
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 3ff6f03c-4780-43a4-a754-bd945a3fc816
+		summarizeBy: none
+		sourceColumn: is_weekend
+
+		annotation SummarizationSetBy = Automatic
+
+	column team_name
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: fd2aaf38-6941-4287-96a0-333ff067dd39
+		summarizeBy: none
+		sourceColumn: team_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column department
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 8a33bcd6-2b62-4c69-9344-3bc1b0f6407b
+		summarizeBy: none
+		sourceColumn: department
+
+		annotation SummarizationSetBy = Automatic
+
+	column cost_center
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 5ad4ccc6-327b-4b13-9c80-ecec4df58b73
+		summarizeBy: none
+		sourceColumn: cost_center
+
+		annotation SummarizationSetBy = Automatic
+
+	column team_headcount
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: dd37edc8-36f0-4524-af2f-8c43c17d8c9f
+		summarizeBy: sum
+		sourceColumn: team_headcount
+
+		annotation SummarizationSetBy = Automatic
+
+	column model_name
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 897b7c41-357f-49ca-ad9d-5b9ce0f992ce
+		summarizeBy: none
+		sourceColumn: model_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column vendor
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 4380b6d9-72da-440c-9214-3c5d34b89f2c
+		summarizeBy: none
+		sourceColumn: vendor
+
+		annotation SummarizationSetBy = Automatic
+
+	column model_tier
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 56a9c58b-7aa3-49bf-8659-340463965e7d
+		summarizeBy: none
+		sourceColumn: model_tier
+
+		annotation SummarizationSetBy = Automatic
+
+	column context_window
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: b2ab7de4-d340-4576-ab20-8f76719bdccd
+		summarizeBy: sum
+		sourceColumn: context_window
+
+		annotation SummarizationSetBy = Automatic
+
+	column use_case
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 71c5c492-126b-45b8-b909-ddfb1861458e
+		summarizeBy: none
+		sourceColumn: use_case
+
+		annotation SummarizationSetBy = Automatic
+
+	column use_case_category
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 1f7f9303-2c44-4ecc-a924-03c533e917be
+		summarizeBy: none
+		sourceColumn: use_case_category
+
+		annotation SummarizationSetBy = Automatic
+
+	column value_type
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 981f15ba-a14d-42e5-9e49-e0c40b9c1b12
+		summarizeBy: none
+		sourceColumn: value_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column baseline_hours_per_task
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: 51b2cd70-4cec-4755-b57a-31603f3bbd9e
+		summarizeBy: sum
+		sourceColumn: baseline_hours_per_task
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column active_users
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 1131d258-ed87-4477-97a3-9a91216f7c6e
+		summarizeBy: sum
+		sourceColumn: active_users
+
+		annotation SummarizationSetBy = Automatic
+
+	column requests
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 4acdd4fa-f75d-4637-b53e-97e0d31cb0b4
+		summarizeBy: sum
+		sourceColumn: requests
+
+		annotation SummarizationSetBy = Automatic
+
+	column input_tokens
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: ce87a0f7-d940-4647-8be5-82343e0bc7a5
+		summarizeBy: sum
+		sourceColumn: input_tokens
+
+		annotation SummarizationSetBy = Automatic
+
+	column cached_input_tokens
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: e397a4fc-e76e-47e8-8849-00e0bb7323f3
+		summarizeBy: sum
+		sourceColumn: cached_input_tokens
+
+		annotation SummarizationSetBy = Automatic
+
+	column output_tokens
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: c6fb0e84-f576-4c51-a89c-10c0868688ad
+		summarizeBy: sum
+		sourceColumn: output_tokens
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_tokens
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 80814b3c-7778-4e4c-b9ea-5ad683a1c111
+		summarizeBy: sum
+		sourceColumn: total_tokens
+
+		annotation SummarizationSetBy = Automatic
+
+	column tasks_attempted
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: aed1e4e9-91fb-4c2a-9e1e-f1a78e48ac29
+		summarizeBy: sum
+		sourceColumn: tasks_attempted
+
+		annotation SummarizationSetBy = Automatic
+
+	column tasks_accepted
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: dc02f072-99ff-4b4c-879a-4506602532bf
+		summarizeBy: sum
+		sourceColumn: tasks_accepted
+
+		annotation SummarizationSetBy = Automatic
+
+	column tasks_rejected
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 922e2070-3996-41b9-8fb1-da7eb19f6192
+		summarizeBy: sum
+		sourceColumn: tasks_rejected
+
+		annotation SummarizationSetBy = Automatic
+
+	column hours_saved
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: 81899bbe-0646-4ae8-9c8c-b9fb7d37a184
+		summarizeBy: sum
+		sourceColumn: hours_saved
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column failed_requests
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 9a9b447c-ca01-4e16-a525-536deb286ea1
+		summarizeBy: sum
+		sourceColumn: failed_requests
+
+		annotation SummarizationSetBy = Automatic
+
+	column retry_tokens
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 4dec12e4-c45a-44ce-9c0a-ed6e5827dcc1
+		summarizeBy: sum
+		sourceColumn: retry_tokens
+
+		annotation SummarizationSetBy = Automatic
+
+	column latency_p50_ms
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 707b5d47-3bd1-40ff-bc32-35e50ab5ba8f
+		summarizeBy: sum
+		sourceColumn: latency_p50_ms
+
+		annotation SummarizationSetBy = Automatic
+
+	column latency_p95_ms
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: a431a7dc-bfa3-4d1b-890b-4e081a6d39fa
+		summarizeBy: sum
+		sourceColumn: latency_p95_ms
+
+		annotation SummarizationSetBy = Automatic
+
+	column channel
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: b8766bcd-514d-4499-8990-7290a72b89d2
+		summarizeBy: none
+		sourceColumn: channel
+
+		annotation SummarizationSetBy = Automatic
+
+	column reasoning_tokens
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 7b9fc56c-4d3b-479c-b61c-aae8aa9dea4a
+		summarizeBy: sum
+		sourceColumn: reasoning_tokens
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_anomaly
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 353e563b-a50a-4a45-a129-377fe474d8fa
+		summarizeBy: none
+		sourceColumn: is_anomaly
+
+		annotation SummarizationSetBy = Automatic
+
+	column blended_hourly_rate_eur
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: 2c8f7f79-cf23-4d2e-b605-c0213ff7a5b3
+		summarizeBy: sum
+		sourceColumn: blended_hourly_rate_eur
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column input_price_per_1m_eur
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: d2af5e46-4f26-47b7-b631-e9c9a5a0eda2
+		summarizeBy: sum
+		sourceColumn: input_price_per_1m_eur
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column output_price_per_1m_eur
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: 32d7dc84-69b0-4f46-a6e6-78fb6a8f93ec
+		summarizeBy: sum
+		sourceColumn: output_price_per_1m_eur
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column cached_input_price_per_1m_eur
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: 5ce1fc73-913f-41e8-929c-30fb75dd87e7
+		summarizeBy: sum
+		sourceColumn: cached_input_price_per_1m_eur
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column cost_eur
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: 7845fa91-4011-4479-a904-27d8d0b0b2ba
+		summarizeBy: sum
+		sourceColumn: cost_eur
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column labour_value_eur
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: de5cd4b9-d45f-4dcd-920f-bb017f092d0a
+		summarizeBy: sum
+		sourceColumn: labour_value_eur
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column net_value_eur
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: 0d0e6248-9329-4c82-b4f8-3f928d498205
+		summarizeBy: sum
+		sourceColumn: net_value_eur
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column wasted_cost_eur
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: a8923adc-47f7-42b0-8fd0-9ccfd174e4d5
+		summarizeBy: sum
+		sourceColumn: wasted_cost_eur
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column monthly_budget_eur
+		dataType: double
+		sourceProviderType: decimal
+		lineageTag: d8d00a2b-52ff-452b-8b7d-676d450ef31c
+		summarizeBy: sum
+		sourceColumn: monthly_budget_eur
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column country
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 73ca4cf6-ef5e-4ab6-bc8a-29e2f4ecd954
+		summarizeBy: none
+		sourceColumn: country
+
+		annotation SummarizationSetBy = Automatic
+
+	partition ai_token_spend = m
+		mode: directQuery
+		source =
+				let
+				  Source = PostgreSQL.Database("ep-floral-water-agqhui05-pooler.c-2.eu-central-1.aws.neon.tech:5432", "mydb"),
+				  #"Navigation 1" = Source{[Schema = "public", Item = "ai_token_spend"]}[Data]
+				in
+				  #"Navigation 1"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
